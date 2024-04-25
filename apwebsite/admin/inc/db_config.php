@@ -20,12 +20,20 @@
         return $data;
     }
     function select($sql,$values,$datatypes){
-        $con =$GLOBALS['con'];
+        $con = $GLOBALS['con'];
         if($stmt = mysqli_prepare($con,$sql)){ //được sử dụng để chuẩn bị thực thi một câu lệnh SQL. mysqli_prepare(connection, query)
-            mysql_stmt_bind_param($stmt,$datatypes,...$values  );// Liên kết các biến với câu lệnh đã chuẩn bị dưới dạng tham số
+            mysqli_stmt_bind_param($stmt,$datatypes,...$values);// Liên kết các biến với câu lệnh đã chuẩn bị dưới dạng tham số
+            if(mysqli_stmt_execute($stmt)){
+                $res = mysqli_stmt_get_result($stmt);
+                mysqli_stmt_close($stmt);
+                return $res;
+            }else{
+                mysqli_stmt_close($stmt);
+                die("Query cannot be executed - Select");
+            }          
         }
         else{
-            die("Query connot be executed-Select");
+            die("Query cannot be executed - Select");
         }
     }
 ?>
